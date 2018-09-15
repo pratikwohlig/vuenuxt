@@ -11,9 +11,9 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ],
-    css: []
+    ]
   },
+  css: ['bootstrap/dist/css/bootstrap.css'],
   /*
   ** Customize the progress bar color
   */
@@ -22,6 +22,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    vendor: ['jquery', 'bootstrap'],
     /*
     ** Run ESLint on save
     */

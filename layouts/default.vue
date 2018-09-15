@@ -19,7 +19,6 @@ export default {
 
 
 <style>
-@import 'bootstrap/dist/css/bootstrap.css';
 .min-height {
     min-height: calc(100vh - 130px);
 }
