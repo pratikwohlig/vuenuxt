@@ -1,4 +1,4 @@
-# vue-nuxt
+# VUE FRAMEWORK
 
 > Nuxt.js project
 
