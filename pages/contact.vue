@@ -20,6 +20,13 @@
 <script>
 
 export default {
+  // fetch ({ store, redirect }) {
+  //   console.log( store.state);
+  //   if (!store.state.auth) {
+  //     // return redirect('/')
+  //     console.log("not conn");
+  //   }
+  // },
   head () {
     return {
       title: "Vue Framework - Contact",
@@ -27,7 +34,8 @@ export default {
         { hid: 'description', name: 'description', content: 'My custom description' }
       ]
     }
-  }
+  },
+  middleware: 'auth'
 }
 </script>
 
