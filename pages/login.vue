@@ -38,11 +38,13 @@
 </template>
 
 <script>
+const Cookie = process.client ? require('js-cookie') : undefined
 export default {
   async fetch ({ store, params }) {
     // let { data } = await axios.get('http://my-api/stars')
-    console.log(store.commit('getAuth'))
+    // console.log(store.commit('getAuth'))
   },
+  layout: 'loginlayout',
   head () {
     return {
       title: "Vue Framework - Login",
@@ -65,7 +67,7 @@ export default {
           accessToken: 'someStringGotFromApiServiceWithAjax'
         }
         this.$store.commit('setAuth', auth) // mutating to store for client rendering
-        // Cookie.set('auth', auth) // saving token in cookie for server rendering
+        Cookie.set('auth', auth) // saving token in cookie for server rendering
         this.$router.push('/')
       }, 1000)
     },

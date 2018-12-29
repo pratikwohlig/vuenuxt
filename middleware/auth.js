@@ -1,9 +1,4 @@
-// if(localStorage.getItem('token') && localStorage.getItem('token') != '') {
-//     console.log("Auth ");
-// }
-// else
-//     console.log("not Auth ");
-// export default function (ctx) {
+//export default function (ctx) {
 export default async ({ app, route, store, redirect }) => {
     // console.log(route);
     if(!isAuth(store)) {
@@ -14,7 +9,9 @@ export default async ({ app, route, store, redirect }) => {
 }
 function isAuth(store) {
 // Check if user session exists somehow
-    console.log(store.state);
+    console.log(store.state.auth);
     if (!store.state.auth)
         return false;
+    else
+        return true;
 }
