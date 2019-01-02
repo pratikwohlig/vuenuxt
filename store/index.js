@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Cookies from 'js-cookie';
+import axios from 'axios'
 
 const cookieparser = process.server ? require('cookieparser') : undefined
 
@@ -19,7 +20,7 @@ const createStore = () => {
         // this.$cookies.set("auth", auth);
       },
       getAuth(state, auth) {
-        console.log(state,auth);
+        // console.log(state,auth);
         return auth
       }
     },
@@ -29,12 +30,24 @@ const createStore = () => {
         if (req.headers.cookie) {
           const parsed = cookieparser.parse(req.headers.cookie)
           try {
-            auth = JSON.parse(parsed.auth)
+            auth = JSON.parse(parsed.auth);
+            // console.log(localStorage.getItem("auth"));
+            // if(process.server) {
+            //   console.log(localStorage.getItem("auth"));
+            //   if(window.localStorage.getItem("auth")!=auth)
+            //     auth=null;
+            // }
           } catch (err) {
             // No valid cookie found
           }
         }
         commit('setAuth', auth)
+      },
+      async logout({ commit, redirect }) {
+        //await axios.post('/api/logout')
+        Cookies.remove('auth');
+        commit('setAuth', null);
+        // return redirect('/login');
       }
     }
   })

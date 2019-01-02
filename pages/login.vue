@@ -64,8 +64,10 @@ export default {
       // console.log(this.username);
       setTimeout(() => { // we simulate the async request with timeout.
         const auth = {
-          accessToken: 'someStringGotFromApiServiceWithAjax'
+          accessToken: this.username
         }
+        if(process.browser)
+          localStorage.setItem("auth",this.username);
         this.$store.commit('setAuth', auth) // mutating to store for client rendering
         Cookie.set('auth', auth) // saving token in cookie for server rendering
         this.$router.push('/')

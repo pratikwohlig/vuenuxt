@@ -22,10 +22,11 @@
 export default {
   // fetch ({ store, redirect }) {
   //   console.log( store.state);
-  //   if (!store.state.auth) {
-  //     // return redirect('/')
-  //     console.log("not conn");
-  //   }
+  //   // console.log(JSON.parse(localStorage.getItem("auth")));
+  //   // if (!store.state.auth) {
+  //   //   // return redirect('/')
+  //   //   console.log("not conn");
+  //   // }
   // },
   head () {
     return {
