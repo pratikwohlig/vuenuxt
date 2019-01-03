@@ -10,10 +10,10 @@
               <div class="form-group">
                 <label for="email">Email address</label>
                 <input type="email" class="form-control" v-model="username"  aria-describedby="emailHelp" name="email" placeholder="Enter email"   required>
-                <!-- <div *ngIf="f.submitted && email.invalid" class="invalid-feedback">
-                  <div *ngIf="email.errors.required">Email is required</div>
-                  <div *ngIf="email.errors.email">Email must be a valid email address</div>
-                </div> -->
+                <div *ngIf="username.$error" class="invalid-feedback">
+                  <div *ngIf="username.$error.required">Email is required</div>
+                  <div *ngIf="username.$error.email">Email must be a valid email address</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="password">Password</label>
@@ -39,6 +39,7 @@
 
 <script>
 const Cookie = process.client ? require('js-cookie') : undefined
+const { required, minLength } = window.validators
 export default {
   async fetch ({ store, params }) {
     // let { data } = await axios.get('http://my-api/stars')
@@ -59,6 +60,15 @@ export default {
        password:''
      }
    },
+  validations: {
+    username: {
+      required, email,
+    },
+    password: {
+      required, 
+      minLength: minLength(8)
+    }
+  },
    methods: {
     login(){
       // console.log(this.username);
