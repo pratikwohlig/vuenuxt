@@ -9,11 +9,13 @@
             <form name="loginform" class="form-signin" v-on:submit.prevent="login" >
               <div class="form-group">
                 <label for="email">Email address</label>
-                <input type="email" class="form-control" v-model="username"  aria-describedby="emailHelp" name="email" placeholder="Enter email"   required>
-                <div *ngIf="username.$error" class="invalid-feedback">
+                <input type="email" v-validate="'required|email'" class="form-control" v-model="username"  aria-describedby="emailHelp" name="email" placeholder="Enter email"   required>
+                <!-- <div *ngIf="username.$error" class="invalid-feedback">
                   <div *ngIf="username.$error.required">Email is required</div>
                   <div *ngIf="username.$error.email">Email must be a valid email address</div>
-                </div>
+                </div> -->
+                <i v-show="errors.has('username')" class="fa fa-warning"></i>
+                <span v-show="errors.has('username')" class="help is-danger">{{ errors.first('username') }}</span>
               </div>
               <div class="form-group">
                 <label for="password">Password</label>
@@ -39,7 +41,7 @@
 
 <script>
 const Cookie = process.client ? require('js-cookie') : undefined
-const { required, minLength } = window.validators
+// const { required, minLength } = window.validators
 export default {
   async fetch ({ store, params }) {
     // let { data } = await axios.get('http://my-api/stars')
@@ -57,24 +59,35 @@ export default {
   data() {
      return {
        username:'',
-       password:''
+       password:'',
+       errors:[]
      }
    },
-  validations: {
-    username: {
-      required, email,
-    },
-    password: {
-      required, 
-      minLength: minLength(8)
-    }
-  },
+  // validations: {
+  //   username: {
+  //     required, email,
+  //   },
+  //   password: {
+  //     required, 
+  //     minLength: minLength(8)
+  //   }
+  // },
    methods: {
     login(){
       // console.log(this.username);
       setTimeout(() => { // we simulate the async request with timeout.
         const auth = {
           accessToken: this.username
+        }
+        if(!this.username || this.username == '')
+        {
+          this.errors.push('Email required.');
+          return false;
+        }
+        if(!this.password || this.password == '')
+        {
+          this.errors.push('Password required.');
+          return false;
         }
         if(process.browser)
           localStorage.setItem("auth",this.username);

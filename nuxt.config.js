@@ -24,8 +24,12 @@ module.exports = {
   /*
   ** Build configuration
   */
+  plugins: [
+    '~plugins/vee-validate.js'
+  ],
+
   build: {
-    vendor: ['jquery', 'bootstrap'],
+    vendor: ['jquery', 'bootstrap', 'vee-validate'],
     /*
     ** Run ESLint on save
     */
