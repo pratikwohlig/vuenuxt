@@ -1,48 +1,68 @@
 <template>
-    <div  class="container-fluid loginbody">
+  <div  class="container-fluid loginbody">
     <section class="container">
-    <div class="row">
-      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-        <div class="card card-signin my-5">
-          <div class="card-body">
-            <h5 class="card-title text-center">Sign In</h5>
-            <form name="loginform" class="form-signin" v-on:submit.prevent="login" >
-              <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" v-validate="'required|email'" class="form-control" v-model="username"  aria-describedby="emailHelp" name="email" placeholder="Enter email"   required>
-                <!-- <div *ngIf="username.$error" class="invalid-feedback">
-                  <div *ngIf="username.$error.required">Email is required</div>
-                  <div *ngIf="username.$error.email">Email must be a valid email address</div>
-                </div> -->
-                <i v-show="errors.has('username')" class="fa fa-warning"></i>
-                <span v-show="errors.has('username')" class="help is-danger">{{ errors.first('username') }}</span>
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" v-model="password" id="exampleInputPassword1" name="password" placeholder="Password"   required>
-                <!-- <div *ngIf="f.submitted && upassword.invalid" class="invalid-feedback">
-                  <div *ngIf="upassword.errors?.required">Password is required</div>
-                  <div *ngIf="upassword.errors && upassword.errors.pattern"> 
-                    Minimum eight characters, at least one uppercase letter, one lowercase letter and one number {{model.upassword}}
-                  </div> 
-                </div> -->
-              </div>
-              <button type="submit"   class="btn btn-primary" >Submit</button>
-            </form>
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card card-signin my-5">
+            <div class="card-body">
+              <h5 class="card-title text-center">Sign In</h5>
+              <form name="loginform" class="form-signin" v-on:submit.prevent="login" >
+                <div class="form-group">
+                  <label for="email">Email address</label>
+                  <input type="text" v-validate.continues="'required|email'" class="form-control" v-model="username"  aria-describedby="emailHelp" name="email" placeholder="Enter email" required>
+                  
+                  <!-- <span v-show="errors.has('username')" class="help is-danger">{{ errors.first('username') }}</span> -->
+                  <div class="invalid-feedback" v-show="errors.has('email')">
+                    <div v-for="error in errors.collect('email')" :key="error">{{error}}</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" v-validate.continues="{ 'required': true, 'regex': pwdPattern }" class="form-control" v-model="password" id="exampleInputPassword1" name="password" placeholder="Password"  required >
+                  <div class="invalid-feedback" v-show="errors.has('password')">
+                    <div v-for="error in errors.collect('password')" :key="error">{{error}}</div>
+                  </div>
+                </div>
+                <button type="submit"   class="btn btn-primary" >Submit</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-</div>
+    </section>
+  </div>
   
   
 </template>
 
 <script>
+import VeeValidate, { Validator } from 'vee-validate';
 const Cookie = process.client ? require('js-cookie') : undefined
-// const { required, minLength } = window.validators
+
+//for custom error message
+const dictionary = {
+  custom: {
+    email: {
+      required: 'Please enter email',
+      email: 'Please enter valid email'
+    },
+    password: {
+      required: () => 'Please enter password',
+      regex: 'Minimum eight characters, at least one uppercase letter, one lowercase letter and one number'
+    }
+  }
+};
+Validator.localize('en', dictionary);
+// or use the instance method
+// this.$validator.localize('en', dictionary);
+//for custom error message
 export default {
+  inject: {
+    $validator: '$validator'
+  },
+  $_veeValidate: {
+    validator: 'new' // give me my own validator scope.
+  },
   async fetch ({ store, params }) {
     // let { data } = await axios.get('http://my-api/stars')
     // console.log(store.commit('getAuth'))
@@ -60,7 +80,7 @@ export default {
      return {
        username:'',
        password:'',
-       errors:[]
+       pwdPattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
      }
    },
   // validations: {
@@ -76,25 +96,24 @@ export default {
     login(){
       // console.log(this.username);
       setTimeout(() => { // we simulate the async request with timeout.
-        const auth = {
-          accessToken: this.username
-        }
-        if(!this.username || this.username == '')
-        {
-          this.errors.push('Email required.');
-          return false;
-        }
-        if(!this.password || this.password == '')
-        {
-          this.errors.push('Password required.');
-          return false;
-        }
-        if(process.browser)
-          localStorage.setItem("auth",this.username);
-        this.$store.commit('setAuth', auth) // mutating to store for client rendering
-        Cookie.set('auth', auth) // saving token in cookie for server rendering
-        this.$router.push('/')
-      }, 1000)
+        this.$validator.validateAll().then(x => {
+          if(x) {
+            const auth = {
+              accessToken: this.username
+            }
+            if(process.browser)
+              localStorage.setItem("auth",this.username);
+            this.$store.commit('setAuth', auth) // mutating to store for client rendering
+            Cookie.set('auth', auth) // saving token in cookie for server rendering
+            this.$router.push('/')
+            console.log(process.env.API_KEY)
+          }
+          else
+            console.log("err")   
+        }).catch(e => {
+          console.log(e)
+        })
+      }, 0)
     },
     
   } 
@@ -202,6 +221,9 @@ export default {
   padding-bottom: calc(var(--input-padding-y) / 3);
   font-size: 12px;
   color: #777;
+}
+.invalid-feedback {
+  display: block;
 }
 </style>
 

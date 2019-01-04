@@ -1,6 +1,4 @@
 import Vue from 'vue';
-import VeeValidate from 'vee-validate';
+import VeeValidate, { Validator } from 'vee-validate';
 
-Vue.use(VeeValidate, {
-  inject: false
-});
+Vue.use(VeeValidate,{ inject: false });

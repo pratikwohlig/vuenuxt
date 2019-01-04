@@ -1,3 +1,6 @@
+require('dotenv').config();
+// let secureEnv = require('secure-env');
+// process.env = secureEnv({secret:'nuxt_test123'});
 module.exports = {
   // router: {
   //   middleware: 'auth'
@@ -24,8 +27,11 @@ module.exports = {
   /*
   ** Build configuration
   */
+  modules: [
+    '@nuxtjs/dotenv',
+  ],
   plugins: [
-    '~plugins/vee-validate.js'
+    { src: '~plugins/vee-validate.js' }
   ],
 
   build: {
